@@ -292,12 +292,71 @@ arr2.reduce(function (p, c, i) {
 
 /***************************** */
 
-// 3. null
-var n = null;
-console.log(typeof n); // object
+// // 3. null
+// var n = null;
+// console.log(typeof n); // object
 
-console.log(n == undefined); // true
-console.log(n == null); // true
+// // console.log("" == 0); // true
+// // console.log(0 == undefined); // true
+// // console.log(n == undefined); // true
+// //  console.log(n == null); // true
 
-console.log(n === undefined); // false
-console.log(n === null); // true
+// console.log(n === undefined); // false
+// console.log(n === null); // true
+// {y : 2}
+
+
+// 재할당 / 변경
+// x.y.z = w (변경)
+// z = w (재할당. 이름을 새로줌)
+
+// const x = {a: 1}
+// const y = x 
+// x.a = 3
+// x.a = 4
+
+
+const xs = [1,2,3,4,5]
+const average = sum(xs) / xs.length
+
+function sum(xs) {
+  return xs.reduce((x,y)=> x+y,0)
+}
+
+..
+.
+.
+.
+.
+
+const mean = ....
+....
+// console.info(f(1))
+
+
+
+// let y = 1
+// y = 2
+
+// console.info("y = ", y)
+
+// const z = { y : 1 }
+// let x = {...z}
+// x.y = 3
+// // x = { y: 2 };
+// console.info(z)
+
+// const x = {
+// }
+// 1
+// 1
+// 437
+// 437
+// const z = x.y  // 2 <- undefined
+// w = .
+// .
+// .
+// .
+// .
+// .
+// .
