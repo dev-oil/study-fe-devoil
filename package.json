@@ -1,0 +1,16 @@
+{
+  "name": "ts-snippets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@biomejs/biome": "^1.6.3",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.3"
+  }
+}
