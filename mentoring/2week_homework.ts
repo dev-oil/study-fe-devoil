@@ -26,15 +26,11 @@ function solution(code: string): string {
   let ret: string = '';
   let mode: '0' | '1' = '0';
   
-  for (let i = 0; i < code.length; i++) {
-    if (code[i] === '1') {
+  for (const [i, char] of [...code].entries()) { // entries 사용 시 배열 또는 타입이 명시된 이터러블 객체에서만 사용 가능 (Iterable로 인식할 수 있도록 타입 단언 [...code]를 사용)
+    if (char === '1') {
       mode = mode === '0' ? '1' : '0';
-    } else {
-      if (mode === '0' && i % 2 === 0) {
-        ret += code[i];
-      } else if (mode === '1' && i % 2 !== 0) {
-        ret += code[i];
-      }
+    } else if (i % 2 === +mode) { // mode가 0이면 짝수, mode가 1이면 홀수 // + 단항 덧셈 연산자 이용
+      ret += char;
     }
   }
   
