@@ -4,9 +4,9 @@ function solution(num_list: string | any[]) {
   let add = 0;
   let multiply = 1;
   
-  for(let i = 0; i < num_list.length; i++){
-    add += num_list[i];
-    multiply *= num_list[i];
+  for(let i of num_list){ // of 문으로 변경
+    add += i;
+    multiply *= i;
   }
   
   add = add**2;
