@@ -100,3 +100,176 @@ function setIntervalForMe(f: any, time: number){
 const resultSetInterval = setIntervalForMe(() => {
   console.info('자... 이게 클릭이야..');
 }, 1000)
+
+/*****************************************/
+// 수업
+
+class Dog {
+  constructor(private name: string) {
+    
+  }
+}
+const dogname = new Dog("thompson").name
+// - 
+// **자신이 속한 객체 또는 자신이 생성할 인스턴스를 가리키는 (그리고 값을 참조하는) 식별자**가 필요하다.
+
+//  ## - 생성자 함수에서 프로퍼티 생성이 먼저 이루어지지 않기 때문    
+
+
+// const play = {
+//   play() {
+//     console.log(`${this.name} 놀자~`);
+//   },
+// };
+
+// const sleep = {
+//   sleep() {
+//     console.log(`${this.name} 자자~`);
+//   },
+// };
+
+// function Dog(name) {
+//   this.name = name;
+// }
+
+// Object.assign(Dog.prototype, play, sleep);
+
+// const dog = new Dog('멍멍');
+// console.log(dog);
+// dog.play();
+// dog.sleep();
+
+// // Class 에서
+// class Animal {}
+// class Tiger extends Animal {
+//   constructor(name) {
+//     super();
+//     this.name = name;
+//   }
+// }
+
+// Object.assign(Tiger.prototype, play, sleep);
+// const tiger = new Tiger('어흥');
+// tiger.play();
+// tiger.sleep();
+
+function Dog(name, age) {
+  this.name = name
+  this.age = age
+}
+
+class Poodle extends Dog {
+  constructor(name, age){
+    super(name, age)
+
+
+  }
+  swim() {
+    console.info(`${this.name} is swimming`)   
+  }
+}
+
+// new Dog("tom", "yorkie")
+
+const happy = new Poodle("happy", 3)
+happy.swim();
+
+
+function Dog2(name, age) {
+  return {
+    name,
+    age
+  }
+}
+
+function Collie(name, age) {
+  const dog = Dog2(name, age)
+  return {
+    ...dog,
+    hoard() {
+      console.info(`${name} is hoarding cows`)
+    }
+  }
+}
+
+const tom = Collie("tom", 3)
+tom.hoard()
+// Dog2("happy", "beagle")
+
+// 프로토타입, 인스턴스
+
+// 인스턴스(객체) = 프로토타입 + 배리에이션
+// 김유화 = {} + (이름: 김유화, 국적:한국, 성별: 여, 팔2개, 다리2개, 눈2개)
+
+
+// Object.assign(Poodle.prototype, sleep);
+
+{
+  class Dog {
+    constructor(name: string, age: number) {
+      this.name = name;
+      this.age = age;
+    }
+
+    sleep() {
+      console.info("sleep")
+    }
+  }
+
+  class Poodle extends Dog{
+    constructor(name: string, age: number, color : string ) {
+      super(name, age)
+      this.color = color;
+    }
+    
+    swip() {
+      console.info("swip")
+    }
+  }
+
+  const happy = new Poodle()
+}
+
+{
+  function Dog(name, string) {
+
+  }
+
+  function Poodle(){
+
+  }
+
+  const happy = new Poodle()
+
+}
+
+{
+  class Student {
+
+    constructor(firstName, lastName) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+    }
+    get fullName() {
+      // 접근시 get
+      return `get ${this.lastName} ${this.firstName}`;
+    }
+    
+    // fullName = this.firstName + this.lastName
+
+    set fullName(value) {
+      // 할당시 set
+      console.log('set', value);
+    }
+  }
+  
+  const student = new Student('흥민', '손');
+  // student.firstName = '강인';
+  
+  // console.log(student.firstName);
+  // // console.log(student.fullName()); // why 얘만 함수로 호출되는가 . . . => 생성자에서 한번 만들어 지고 나선 업데이트가 안되기 때문에, 호출하면서 계속 만들어 주고 싶으면 함수로 만들어야함.
+  // // 근데 함수모양으로 호출하는게 싫다면 . .
+  
+  // console.log(student.fullName);
+  student.fullName = '김민재';
+}
