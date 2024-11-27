@@ -19,14 +19,14 @@ function solution(n: number, control: string) {
 // 두번째 풀이 (객체 사용)
 function solution2(n:number, control: string) {
   const commands: { [key: string]: number } = {
-      w: 1,
-      s: -1,
-      d: 10,
-      a: -10
+    w: 1,
+    s: -1,
+    d: 10,
+    a: -10
   };
 
-  for (let i of control) {
-      n += commands[i] || 0;
+  for (const i of control) {
+    n += commands[i];
   }
 
   return n;

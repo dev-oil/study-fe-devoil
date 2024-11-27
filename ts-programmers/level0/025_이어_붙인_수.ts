@@ -11,7 +11,7 @@ function solution(num_list: number[]) : number {
         odd += i;
       }
   }
-  return +even + +odd;
+  return Number(even) + Number(odd);
 }
 
 // test
