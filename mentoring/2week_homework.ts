@@ -67,8 +67,10 @@ const arr = [1, 2, 10, 5];
 
 // [만들어본 map]
 // currentValue
-function mapForMe(xs: any[], f: (x: any) => any): any[] {
-  let result: any[] = [];
+
+// generic제네릭
+function mapForMe<T1 ,T2>(xs: T1[], f: (x: T1) => T2): T2[] {
+  let result: T2[] = [];
   
   for (let i = 0; i < xs.length; i++) {
     result.push(f(xs[i]));  // 함수 f(x)에 배열 요소 전달
@@ -78,8 +80,11 @@ function mapForMe(xs: any[], f: (x: any) => any): any[] {
 }
 
 // [사용]
-const resultMap = mapForMe(arr, (x) => x)
+const xs = [1,2,3].map((x) => x % 2 === 0 )
+const resultMap = mapForMe(arr, (x) => x  %2 === 0)
 console.info(resultMap);
+
+// Array.filter, Array.flatMap
 
 /*****************************************/
 // 숙제 3
