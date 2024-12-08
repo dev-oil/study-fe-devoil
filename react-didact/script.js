@@ -38,17 +38,25 @@ function createDom(fiber) {
   return dom
 }
 
+// 5-3. 다음 작업이 없는 경우 전체 fiber 트리 DOM에 커밋
+function commitRoot() {
+  // TODO add nodes to dom
+}
+
 // render 함수에서 fiber 트리의 루트에 nextUnitOfWork 함수 설정
 function render(element, container) {
-  nextUnitOfWork = {
+  // 5-2. fiber 트리의 루트를 추적
+  wipRoot = {
     dom: container,
     props: {
       children: [element],
     },
   }
+  nextUnitOfWork = wipRoot
 }
 
 let nextUnitOfWork = null
+let wipRoot = null
 
 // 준비를 마친 브라우저가 workLoop를 호출하면, 루트에서부터 작업 시작
 function workLoop(deadline) {
@@ -59,6 +67,12 @@ function workLoop(deadline) {
     )
     shouldYield = deadline.timeRemaining() < 1
   }
+  
+  // 5-3. 다음 작업이 없는 경우 전체 fiber 트리 DOM에 커밋
+  if (!nextUnitOfWork && wipRoot) {
+    commitRoot()
+  }
+
   requestIdleCallback(workLoop)
 }
 
@@ -69,9 +83,7 @@ function performUnitOfWork(fiber) {
   if(!fiber.dom) {
     fiber.dom = createDom(fiber)
   }
-  if (fiber.parent) {
-    fiber.parent.dom.appendChild(fiber.dom)
-  }
+  // 5-1. dom 변형 부분 제거 fiber.parents
 
   // 각각의 자식들마다 새로운 fiber 생성
   const elements = fiber.props.children
@@ -111,23 +123,15 @@ function performUnitOfWork(fiber) {
   }
 }
 
-
-
-function performUnitOfWork(nextUnitOfWork) {
-  // TODO
-}
-
 const Didact = {
   createElement,
   render,
 }
 
 /** @jsx Didact.createElement */
-const element = (
-  <div id="foo">
-    <h1>Hello World</h1>
-    <h2 style="text-align:right">from Didact</h2>
-  </div>
-)
+function App(props) {
+  return <h1>Hi {props.name}</h1>
+}
+const element = <App name="foo" />
 const container = document.getElementById("root")
 Didact.render(element, container)
