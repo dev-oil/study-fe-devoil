@@ -75,6 +75,7 @@ function commitWork(fiber) {
   }
 
   // 수정: 부모 DOM을 안전하게 탐색
+  // 7-2. DOM 노드의 부모를 찾으려면 DOM 노드를 가진 fiber를 찾을 때까지 fiber 트리의 상단으로 올라감
   let domParentFiber = fiber.parent;
   while (!domParentFiber.dom) {
     domParentFiber = domParentFiber.parent;
@@ -85,10 +86,19 @@ function commitWork(fiber) {
   } else if (fiber.effectTag === "UPDATE" && fiber.dom != null) {
     updateDom(fiber.dom, fiber.alternate.props, fiber.props);
   } else if (fiber.effectTag === "DELETION") {
-    domParent.removeChild(fiber.dom);
+    commitDeletion(fiber, domParent);
   }
   commitWork(fiber.child);
   commitWork(fiber.sibling);
+}
+
+// 7-3. 노드를 제거할 때도 동일하게, DOM 노드를 가진 자식을 찾을 때까지 탐색을 수행
+function commitDeletion(fiber, domParent) {
+  if (fiber.dom) {
+    domParent.removeChild(fiber.dom);
+  } else {
+    commitDeletion(fiber.child, domParent);
+  }
 }
 
 // render 함수에서 fiber 트리의 루트에 nextUnitOfWork 함수 설정
@@ -129,17 +139,13 @@ requestIdleCallback(workLoop);
 
 // 새로운 노드 생성, DOM에 추가
 function performUnitOfWork(fiber) {
-  if (!fiber.dom) {
-    fiber.dom = createDom(fiber);
+  // 7-1. 함수형 컴포넌트 추가 지원
+  const isFunctionComponent = fiber.type instanceof Function;
+  if (isFunctionComponent) {
+    updateFunctionComponent(fiber);
+  } else {
+    updateHostComponent(fiber);
   }
-
-  // 5-1. dom 변형 부분 제거 fiber.parents
-
-  // 각각의 자식들마다 새로운 fiber 생성
-  const elements = fiber.props.children;
-
-  // 6-3. 이제 새로운 fiber를 생성하는 코드를 performUnitOfWork에서 추출해서 reconcileChildren 함수 생성
-  reconcileChildren(fiber, elements);
   if (fiber.child) {
     return fiber.child;
   }
@@ -150,6 +156,20 @@ function performUnitOfWork(fiber) {
     }
     nextFiber = nextFiber.parent;
   }
+}
+
+// 7-2. updateFunctionComponent 에서는 자식 요소를 얻는 함수를 실행함
+function updateFunctionComponent(fiber) {
+  const children = [fiber.type(fiber.props)];
+  reconcileChildren(fiber, children);
+}
+
+// 7-2. updateHostComponent > 이전과 동일한 일을 함
+function updateHostComponent(fiber) {
+  if (!fiber.dom) {
+    fiber.dom = createDom(fiber);
+  }
+  reconcileChildren(fiber, fiber.props.children);
 }
 
 // 6-3. 이제 새로운 fiber를 생성하는 코드를 performUnitOfWork에서 추출해서 reconcileChildren 함수 생성
