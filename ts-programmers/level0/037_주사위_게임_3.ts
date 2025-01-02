@@ -1,35 +1,35 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/181916
 
-// 첫번째 풀이 ㅎ
-function solution(a: number, b: number, c: number, d: number) {
-  if (a === b && a === c && a === d) return 1111 * a
+function solution(a: number, b: number, c: number, d: number): number {
+  const dice: number[] = [a, b, c, d].sort((x, y) => x - y);
+  const [p, q, r, s] = dice;
 
-  if (a === b && a === c) return (10 * a + d) ** 2
-  if (a === b && a === d) return (10 * a + c) ** 2
-  if (a === c && a === d) return (10 * a + b) ** 2
-  if (b === c && b === d) return (10 * b + a) ** 2
+  // 1. 네 주사위가 모두 같은 경우
+  if (p === s) return 1111 * p;
 
-  if (a === b && c === d) return (a + c) * Math.abs(a - c)
-  if (a === c && b === d) return (a + b) * Math.abs(a - b)
-  if (a === d && b === c) return (a + b) * Math.abs(a - b)
+  // 2. 세 주사위가 같고 하나가 다른 경우
+  if (p === r || q === s) {
+    const same: number = p === r ? p : s; // 세 개의 동일한 숫자
+    const different: number = p === r ? s : p; // 나머지 다른 숫자
+    return (10 * same + different) ** 2;
+  }
 
-  if (a === b) return c * d
-  if (a === c) return b * d
-  if (a === d) return b * c
-  if (b === c) return a * d
-  if (b === d) return a * c
-  if (c === d) return a * b
+  // 3. 두 쌍의 숫자가 각각 같은 경우
+  if (p === q && r === s) {
+    return (p + r) * Math.abs(p - r);
+  }
 
-  return Math.min(a, b, c, d)
+  // 4. 두 개가 같고 나머지 두 개가 서로 다른 경우
+  if (p === q || r === s) {
+    const same: number = p === q ? p : r; // 같은 숫자
+    const other1: number = p === q ? r : p; // 나머지 다른 숫자 1
+    const other2: number = p === q ? s : q; // 나머지 다른 숫자 2
+    return other1 * other2;
+  }
+
+  // 5. 네 숫자가 모두 다른 경우
+  return p; // 정렬했으므로 가장 작은 숫자는 항상 첫 번째
 }
-
-// 객체를 만들어서 키 밸류로 번호를 받아오는 방법. . . 
-  // const arr = [a, b, c, d];
-  // const counts: { [key: number]: number } = {};
-
-  // for (const num of arr) {
-  //   counts[num] = (counts[num] || 0) + 1; // 등장 횟수 계산
-  // }
 
 // test
 console.log(solution(2,2,2,2)); // 2222

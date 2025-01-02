@@ -1,17 +1,17 @@
 // https://school.programmers.co.kr/learn/courses/30/lessons/181919
 
-function solution(n: number) {
-  let answer: number[] = [];
+function solution(n: number, arr: number[] = []): number[] {
+  arr.push(n);
 
-  while (n !== 1) {
-    answer.push(n);
-    n = (n % 2 === 0) // 삼항 연산자 줄바꿈 컨벤션
-      ? n / 2 
-      : 3 * n + 1;
+  if (n === 1) {
+    return arr; 
   }
-  answer.push(n);
 
-  return answer;
+  if (n % 2 === 0) {
+    return solution(n / 2, arr); 
+  }
+
+  return solution(3 * n + 1, arr);
 }
 
 // test
