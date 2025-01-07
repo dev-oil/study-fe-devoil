@@ -158,10 +158,55 @@ function performUnitOfWork(fiber) {
   }
 }
 
+// 8-3. 함수형 컴포넌트를 호출하기 전 useState 함수의 내부에서 사용하기 위한 몇몇 전역 변수 초기화
+let wipFiber = null;
+let hookIndex = null;
+
 // 7-2. updateFunctionComponent 에서는 자식 요소를 얻는 함수를 실행함
+// 8-2. Counter 함수를 호출하는 부분. 그리고 그 함수 내부에서 useState를 호출
 function updateFunctionComponent(fiber) {
+  // 8-3. 그 fiber에 hooks 배열을 추가함으로서 동일한 컴포넌트에서 여러 번 useState 함수를 호출 할 수 있도록함
+  wipFiber = fiber;
+  hookIndex = 0;
+  wipFiber.hooks = [];
   const children = [fiber.type(fiber.props)];
   reconcileChildren(fiber, children);
+}
+function useState(initial) {
+  // 8-4. 함수형 컴포넌트가 useState를 호출할 때 이것이 오래된 hook인지를 체크하는데, 이때 훅 인덱스를 사용하여 fiber의 alternate를 체크,
+
+  const oldHook = wipFiber.alternate && wipFiber.alternate.hooks && wipFiber.alternate.hooks[hookIndex];
+
+  // 8-4. 만약 우리가 가지고 있는 것이 오래된 hook이라면 상태를 초기화하지 않았을 경우 이 훅의 상태를 새로운 훅으로 복사
+  const hook = {
+    state: oldHook ? oldHook.state : initial,
+    queue: []
+  };
+
+  // 8-6. 컴포넌트 렌더링 다음에 수행, 오래된 훅의 큐에서 모든 액션을 가져온 다음 이를 새로운 훅 state에 하나씩 적용하면 갱신된 state를 얻을 수 있게 됨
+  const actions = oldHook ? oldHook.queue : [];
+  actions.forEach(action => {
+    hook.state = action(hook.state);
+  });
+
+  // 8-5. 또한 useState는 상태를 갱신하는 함수 역시 리턴해야 하므로, 액션을 받는 setState 함수를 정의
+  const setState = action => {
+    // 8-5. 이 액션을 우리가 훅에 추가한 큐에 넣음
+    hook.queue.push(action);
+    wipRoot = {
+      dom: currentRoot.dom,
+      props: currentRoot.props,
+      alternate: currentRoot
+    };
+    nextUnitOfWork = wipRoot;
+    deletions = [];
+  };
+
+  // 8-4. 그리고 새로운 훅을 fiber에 추가한 뒤 훅 인덱스 값을 증가시킨 다음 state를 반환
+  // 8-5. 그리고 render 함수에서 했던 것과 비슷한 작업을 하는데, 새로운 작업 중(wip)인 루트를 다음 작업할 단위로 설정하여 반복문에서 새로운 렌더 단계를 시작할 수 있도록 함
+  wipFiber.hooks.push(hook);
+  hookIndex++;
+  return [hook.state, setState];
 }
 
 // 7-2. updateHostComponent > 이전과 동일한 일을 함
@@ -220,19 +265,34 @@ function reconcileChildren(wipFiber, elements) {
 }
 const Didact = {
   createElement,
-  render
+  render,
+  useState
 };
 
 /** @jsx Didact.createElement */
+function Counter() {
+  const [state, setState] = Didact.useState(1);
+  // 8-1. 카운터를 클릭할 때마다, state를 1씩 추가
+  return Didact.createElement("h1", {
+    onClick: () => setState(c => c + 1)
+  }, "Count: ", state);
+}
+const element = Didact.createElement(Counter, null);
 const container = document.getElementById("root");
-const updateValue = e => {
-  rerender(e.target.value);
-};
-const rerender = value => {
-  const element = Didact.createElement("div", null, Didact.createElement("input", {
-    onInput: updateValue,
-    value: value
-  }), Didact.createElement("h2", null, "Hello ", value));
-  Didact.render(element, container);
-};
-rerender("World");
+Didact.render(element, container);
+
+// const updateValue = e => {
+//   rerender(e.target.value)
+// }
+
+// const rerender = value => {
+//   const element = (
+//     <div>
+//       <input onInput={updateValue} value={value} />
+//       <h2>Hello {value}</h2>
+//     </div>
+//   )
+//   Didact.render(element, container)
+// }
+
+// rerender("World")
