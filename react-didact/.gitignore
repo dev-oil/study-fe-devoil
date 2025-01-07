@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Dependency directories
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+dist/
+build/
+compiled.js
+
+# Parcel cache
+.parcel-cache/
+
+# Babel cache
+.babelrc.cache.json
+
+# VSCode settings
+.vscode/
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+*.tmp
+*.swp
+*.DS_Store
+Thumbs.db
+
+# MacOS system files
+.DS_Store
+
+# IDE specific files
+.idea/
+*.iml
+
+# Environment variables
+.env
+.env.local
+.env.*.local
