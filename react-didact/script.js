@@ -311,6 +311,24 @@ function Counter() {
   // 8-1. 카운터를 클릭할 때마다, state를 1씩 추가
   return <h1 onClick={() => setState((c) => c + 1)}>Count: {state}</h1>;
 }
-const element = <Counter />;
-const container = document.getElementById('root');
-Didact.render(element, container);
+
+// memo, useMemo
+
+// const element = <Counter />;
+// const container = document.getElementById('root');
+// Didact.render(element, container);
+
+// <Button title="foo" />
+// React.createElement(Button)
+// // Button ; 컴포넌트 = props를 인자로 받아서 엘리먼트를 리턴하는 함수
+// // <Button /> !: div 엘리먼트 = 프롭스에다가 <> 씌워놓은거
+// // <
+// function Button() {
+//   return <Box></Box>
+// }
+
+// function add(x, y) {
+//   return x + y;
+// }
+
+// <Button />
